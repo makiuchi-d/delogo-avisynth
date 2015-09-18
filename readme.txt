@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------
-      透過性ロゴ フィルタ for AviSynth 2.5  by MakKi
+      透過性ロゴ フィルタ for AviSynth 2.5  ver 0.01a  by MakKi
 -----------------------------------------------------------------------
 
 【機能】
@@ -28,6 +28,8 @@
   ロゴデータの作成にはAviUtl用ロゴ解析プラグインを使用してください。
 
   ※YUY2専用です。呼び出す前にConvertToYUY2等でYUY2式空間に変換してください。
+  ※AviSynth 2.0x系で使用するには、warpsharpプラグイン付属のLoadPlginEx.dllを使用してください。
+        warpsharp配布場所：http://www.geocities.co.jp/SiliconValley-PaloAlto/2382/
 
 
 【注意】
@@ -58,7 +60,8 @@
 
 【更新履歴】
 
-  2003/10/01   ver 0.01 ・公開
+  2003/10/26   ver 0.01a ・pos_x,pos_yが200未満の時エラーになることがあったのを修正
+  2003/10/01   ver 0.01  ・公開
 
 
 mailto:makki_d210@yahoo.co.jp

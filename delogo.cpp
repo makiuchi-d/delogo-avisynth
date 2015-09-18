@@ -303,9 +303,21 @@ void deLOGO_Base::AdjustLogo(int x,int y,int depth)
 	// ロゴ名コピー
 	memcpy(adjdata->name,data->name,LOGO_MAX_NAME);
 
-	// 左上座標設定（位置調整後）
-	adjdata->x = data->x +(int)(x+200)/4 -50;
-	adjdata->y = data->y +(int)(y+200)/4 -50;
+	// 左上座標・位置端数（位置調整後）
+	if(x>=0){
+		adjdata->x = data->x + int(x/4);
+		adjx = x % 4;
+	} else {
+		adjdata->x = data->x - int((x-3)/4);
+		adjx = 4 - (-x%4);
+	}
+	if(y>=0){
+		adjdata->y = data->y + int(y/4);
+		adjy = y % 4;
+	} else {
+		adjdata->y = data->y - int((y-3)/4);
+		adjy = 4 - (-y%4);
+	}
 
 	adjdata->w = w = data->w + 1;	// 1/4単位調整するため
 	adjdata->h = h = data->h + 1;	// 幅、高さを１増やす
@@ -313,9 +325,6 @@ void deLOGO_Base::AdjustLogo(int x,int y,int depth)
 	// LOGO_PIXELの先頭
 	df = (LOGO_PIXEL*)(data +1);
 	ex = (LOGO_PIXEL*)(adjdata +1);
-
-	adjx = (x+200) % 4;	// 位置端数
-	adjy = (y+200) % 4;
 
 	//----------------------------------------------------- 一番上の列
 	ex[0].dp_y  = df[0].dp_y *(4-adjx)*(4-adjy)*depth/128/16;	// 左端
