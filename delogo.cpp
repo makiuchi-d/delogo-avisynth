@@ -308,14 +308,14 @@ void deLOGO_Base::AdjustLogo(int x,int y,int depth)
 		adjdata->x = data->x + int(x/4);
 		adjx = x % 4;
 	} else {
-		adjdata->x = data->x - int((x-3)/4);
+		adjdata->x = data->x + int((x-3)/4);
 		adjx = 4 - (-x%4);
 	}
 	if(y>=0){
 		adjdata->y = data->y + int(y/4);
 		adjy = y % 4;
 	} else {
-		adjdata->y = data->y - int((y-3)/4);
+		adjdata->y = data->y + int((y-3)/4);
 		adjy = 4 - (-y%4);
 	}
 
