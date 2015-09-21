@@ -130,27 +130,27 @@ PVideoFrame __stdcall EraseLOGO_YUY2::GetFrame(int n, IScriptEnvironment *env)
 
 	dst += lgh->x * 2 + lgh->y * dst_pitch;
 
-	for(int i=0;i<lgh->h && i<dst_h-lgh->y;i++){
+	for(int i=0;i<lgh->h && i<dst_h-lgh->y;++i){
 		for(int j=0;j<lgh->w && j<dst_w/2-lgh->x;j+=2){
 			int dp = lgp->dp_y1 * fade / LOGO_FADE_MAX;	// Y1
 			if(dp){
-				if(dp==LOGO_FADE_MAX) dp--;
-				dst[0] = Clamp((((dst[0]*16)*LOGO_MAX_DP - lgp->y1*dp +(LOGO_MAX_DP-dp)/2)/(LOGO_MAX_DP-dp) +8)/16 ,0,255);
+				if(dp==LOGO_MAX_DP) --dp;
+				dst[0] = Clamp(((dst[0]*16*LOGO_MAX_DP - lgp->y1*dp +(LOGO_MAX_DP-dp)/2)/(LOGO_MAX_DP-dp) +8)/16 ,0,255);
 			}
 			dp = lgp->dp_u * fade / LOGO_FADE_MAX;		// U : Cb
 			if(dp){
-				if(dp==LOGO_FADE_MAX) dp--;
-				dst[1] = Clamp((((dst[1]*16)*LOGO_MAX_DP - lgp->u*dp +(LOGO_MAX_DP-dp)/2)/(LOGO_MAX_DP-dp) +8)/16,0,255);
+				if(dp==LOGO_MAX_DP) --dp;
+				dst[1] = Clamp(((dst[1]*16*LOGO_MAX_DP - lgp->u*dp +(LOGO_MAX_DP-dp)/2)/(LOGO_MAX_DP-dp) +8)/16,0,255);
 			}
 			dp = lgp->dp_y2 * fade / LOGO_FADE_MAX;		// Y2
 			if(dp){
-				if(dp==LOGO_FADE_MAX) dp--;
-				dst[2] = Clamp((((dst[2]*16)*LOGO_MAX_DP - lgp->y2*dp +(LOGO_MAX_DP-dp)/2)/(LOGO_MAX_DP-dp) +8)/16 ,0,255);
+				if(dp==LOGO_MAX_DP) --dp;
+				dst[2] = Clamp(((dst[2]*16*LOGO_MAX_DP - lgp->y2*dp +(LOGO_MAX_DP-dp)/2)/(LOGO_MAX_DP-dp) +8)/16 ,0,255);
 			}
 			dp = lgp->dp_v * fade / LOGO_FADE_MAX;		// V : Cr
 			if(dp){
-				if(dp==LOGO_FADE_MAX) dp--;
-				dst[3] = Clamp((((dst[3]*16)*LOGO_MAX_DP - lgp->v*dp +(LOGO_MAX_DP-dp)/2)/(LOGO_MAX_DP-dp) +8)/16,0,255);
+				if(dp==LOGO_MAX_DP) --dp;
+				dst[3] = Clamp(((dst[3]*16*LOGO_MAX_DP - lgp->v*dp +(LOGO_MAX_DP-dp)/2)/(LOGO_MAX_DP-dp) +8)/16,0,255);
 			}
 			dst += 4;
 			lgp += 1;
@@ -184,16 +184,16 @@ PVideoFrame __stdcall AddLOGO_YUY2::GetFrame(int n, IScriptEnvironment *env)
 
 	dst += lgh->x * 2 + lgh->y * dst_pitch;
 
-	for(int i=0;i<lgh->h && i<dst_h-lgh->y;i++){
+	for(int i=0;i<lgh->h && i<dst_h-lgh->y;++i){
 		for(int j=0;j<lgh->w && j<dst_w/2-lgh->x;j+=2){
 			int dp = lgp->dp_y1 * fade / LOGO_FADE_MAX;	// Y1
-			if(dp) dst[0] = Clamp((((dst[0]*16)*(LOGO_MAX_DP-dp) + lgp->y1*dp)/LOGO_MAX_DP +8)/16, 0,255);
+			if(dp) dst[0] = Clamp(((dst[0]*16*(LOGO_MAX_DP-dp) + lgp->y1*dp +LOGO_MAX_DP/2)/LOGO_MAX_DP +8)/16, 0,255);
 			dp = lgp->dp_u * fade / LOGO_FADE_MAX;		// U : Cb
-			if(dp) dst[1] = Clamp((((dst[1]*16)*(LOGO_MAX_DP-dp) + lgp->u*dp)/LOGO_MAX_DP +8)/16, 0,255);
+			if(dp) dst[1] = Clamp(((dst[1]*16*(LOGO_MAX_DP-dp) + lgp->u*dp +LOGO_MAX_DP/2)/LOGO_MAX_DP +8)/16, 0,255);
 			dp = lgp->dp_y2 * fade / LOGO_FADE_MAX;		// Y2
-			if(dp) dst[2] = Clamp((((dst[2]*16)*(LOGO_MAX_DP-dp) + lgp->y2*dp)/LOGO_MAX_DP +8)/16, 0,255);
+			if(dp) dst[2] = Clamp(((dst[2]*16*(LOGO_MAX_DP-dp) + lgp->y2*dp +LOGO_MAX_DP/2)/LOGO_MAX_DP +8)/16, 0,255);
 			dp = lgp->dp_v * fade / LOGO_FADE_MAX;		// V : Cr
-			if(dp) dst[3] = Clamp((((dst[3]*16)*(LOGO_MAX_DP-dp) + lgp->v*dp)/LOGO_MAX_DP +8)/16, 0,255);
+			if(dp) dst[3] = Clamp(((dst[3]*16*(LOGO_MAX_DP-dp) + lgp->v*dp +LOGO_MAX_DP/2)/LOGO_MAX_DP +8)/16, 0,255);
 			dst += 4;
 			lgp += 1;
 		}
