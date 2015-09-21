@@ -39,15 +39,16 @@ extern AVSValue __cdecl Create_AddLOGO(AVSValue args, void *user_data, IScriptEn
 
 inline void Init_EraseLOGO(IScriptEnvironment* env)
 {
-	env->AddFunction("EraseLOGO","c[logofile]s[logoname]s[pos_x]i[pos_y]i[depth]i[start]i[fadein]i[fadeout]i[end]i",Create_EraseLOGO, 0);
+	env->AddFunction("EraseLOGO","c[logofile]s[logoname]s[pos_x]i[pos_y]i[depth]i[yc_y]i[yc_u]i[yc_v]i[start]i[fadein]i[fadeout]i[end]i",Create_EraseLOGO, 0);
 }
 inline void Init_AddLOGO(IScriptEnvironment* env)
 {
-	env->AddFunction("AddLOGO","c[logofile]s[logoname]s[pos_x]i[pos_y]i[depth]i[start]i[fadein]i[fadeout]i[end]i",Create_AddLOGO, 0);
+	env->AddFunction("AddLOGO","c[logofile]s[logoname]s[pos_x]i[pos_y]i[depth]i[yc_y]i[yc_u]i[yc_v]i[start]i[fadein]i[fadeout]i[end]i",Create_AddLOGO, 0);
 }
 enum {
 	LOGOFILE =1, LOGONAME,
 	POS_X, POS_Y, DEPTH,
+	YC_Y , YC_U , YC_V ,
 	START, F_IN , F_OUT, END
 };
 
@@ -64,7 +65,7 @@ protected:
 	LOGO_HEADER* lgh;
 
 	deLOGO_Base(const PClip& clip,const char* logofile,const char* logoname,int pos_x,int pos_y,
-			int depth,int start,int fadein,int fadeout,int end,  IScriptEnvironment *env,const char* filtername) : GenericVideoFilter(clip)
+			int depth,int y,int u,int v,int start,int fadein,int fadeout,int end,  IScriptEnvironment *env,const char* filtername) : GenericVideoFilter(clip)
 	{
 		const VideoInfo& vi = clip->GetVideoInfo();
 
@@ -80,13 +81,29 @@ protected:
 			ReadLogoData(logofile,logoname);
 			if(pos_x!=0 || pos_y!=0 || depth!=LOGO_DEFAULT_DEPTH)
 				AdjustLogo(pos_x,pos_y,depth);
+			if(y!=0 || u!=0 || v!= 0)
+				ColorTuning(y*16,u*16,v*16);
 		}
 		catch(char* err){
 			env->ThrowError("%s: %s",filtername,err);
 		}
 	}
 	void ReadLogoData(const char* logofile,const char* logoname);
-	void AdjustLogo(int x,int y,int depth);	// AviUtlオリジナルの色空間
+	void AdjustLogo(int x,int y,int depth);	// AviUtlオリジナル色空間のまま
+	void ColorTuning(int y,int u,int v)	// 色調整
+	{
+		int i,j;
+		LOGO_PIXEL* lgp = (LOGO_PIXEL*)(lgh +1);
+
+		for(i=lgh->h;i;--i){
+			for(j=lgh->w;j;--j){
+				lgp->y  += y;
+				lgp->cb += u;
+				lgp->cr += v;
+				++lgp;
+			}
+		}
+	}
 	void Logo_YUY2();
 	void Logo_YV420(){};
 
@@ -112,7 +129,7 @@ protected:
 	int Clamp(int n, int l, int h)
 	{	return (n < l) ? l : (n > h) ? h : n;	}
 
-	// ITU-R TB.601に沿ってAviUtlのYCから変換
+	// ITU-R TB.601に合うようにAviUtlのYCを圧縮
 	int TB601_Y(int y)
 	{	return ((y +(16<<4)) * 220 +128)/ 256;	}
 	int TB601_C(int c)
@@ -130,8 +147,8 @@ class EraseLOGO_YUY2 : public deLOGO_Base {
 
 public:
 	EraseLOGO_YUY2(const PClip& clip,const char* logofile,const char* logoname,
-			int pos_x,int pos_y,int depth,int start,int fadein,int fadeout,int end,IScriptEnvironment *env) 
-					: deLOGO_Base(clip,logofile,logoname,pos_x,pos_y,depth,start,fadein,fadeout,end,env,GetName())
+			int pos_x,int pos_y,int depth,int y,int u,int v,int start,int fadein,int fadeout,int end,IScriptEnvironment *env) 
+					: deLOGO_Base(clip,logofile,logoname,pos_x,pos_y,depth,y,u,v,start,fadein,fadeout,end,env,GetName())
 	{	Logo_YUY2();	}
 
 	static const char* GetName(){	return "EraseLOGO";	}
@@ -147,8 +164,8 @@ class AddLOGO_YUY2 : public deLOGO_Base {
 
 public:
 	AddLOGO_YUY2(const PClip& clip,const char* logofile,const char* logoname,
-			int pos_x,int pos_y,int depth,int start,int fadein,int fadeout,int end,IScriptEnvironment *env) 
-					: deLOGO_Base(clip,logofile,logoname,pos_x,pos_y,depth,start,fadein,fadeout,end,env,GetName())
+			int pos_x,int pos_y,int depth,int y,int u,int v,int start,int fadein,int fadeout,int end,IScriptEnvironment *env) 
+					: deLOGO_Base(clip,logofile,logoname,pos_x,pos_y,depth,y,u,v,start,fadein,fadeout,end,env,GetName())
 	{ Logo_YUY2(); }
 
 	static const char* GetName(){	return "AddLOGO";	}

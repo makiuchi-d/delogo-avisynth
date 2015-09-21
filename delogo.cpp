@@ -59,6 +59,9 @@ AVSValue __cdecl Create_EraseLOGO(AVSValue args, void *user_data, IScriptEnviron
 	int  pos_x = args[POS_X].AsInt(0);
 	int  pos_y = args[POS_Y].AsInt(0);
 	int  depth = args[DEPTH].AsInt(LOGO_DEFAULT_DEPTH);
+	int  yc_y  = args[YC_Y].AsInt(0);
+	int  yc_u  = args[YC_U].AsInt(0);
+	int  yc_v  = args[YC_V].AsInt(0);
 	int  start   = args[START].AsInt(0);
 	int  fadein  = args[F_IN].AsInt(0);
 	int  fadeout = args[F_OUT].AsInt(0);
@@ -67,7 +70,7 @@ AVSValue __cdecl Create_EraseLOGO(AVSValue args, void *user_data, IScriptEnviron
 	const VideoInfo& vi = clip->GetVideoInfo();
 
 	if(vi.IsYUY2())
-		return new EraseLOGO_YUY2(clip,logofile,logoname,pos_x,pos_y,depth,start,fadein,fadeout,end,env);
+		return new EraseLOGO_YUY2(clip,logofile,logoname,pos_x,pos_y,depth,yc_y,yc_u,yc_v,start,fadein,fadeout,end,env);
 	else
 		env->ThrowError("ErazeLOGO : YUY2ê—p");
 
@@ -85,6 +88,9 @@ AVSValue __cdecl Create_AddLOGO(AVSValue args, void *user_data, IScriptEnvironme
 	int  pos_x = args[POS_X].AsInt(0);
 	int  pos_y = args[POS_Y].AsInt(0);
 	int  depth = args[DEPTH].AsInt(LOGO_DEFAULT_DEPTH);
+	int  yc_y  = args[YC_Y].AsInt(0);
+	int  yc_u  = args[YC_U].AsInt(0);
+	int  yc_v  = args[YC_V].AsInt(0);
 	int  start   = args[START].AsInt(0);
 	int  fadein  = args[F_IN].AsInt(0);
 	int  fadeout = args[F_OUT].AsInt(0);
@@ -93,7 +99,7 @@ AVSValue __cdecl Create_AddLOGO(AVSValue args, void *user_data, IScriptEnvironme
 	const VideoInfo& vi = clip->GetVideoInfo();
 
 	if(vi.IsYUY2())
-		return new AddLOGO_YUY2(clip,logofile,logoname,pos_x,pos_y,depth,start,fadein,fadeout,end,env);
+		return new AddLOGO_YUY2(clip,logofile,logoname,pos_x,pos_y,depth,yc_y,yc_u,yc_v,start,fadein,fadeout,end,env);
 	else
 		env->ThrowError("AddLOGO : YUY2ê—p");
 
