@@ -122,12 +122,13 @@ PVideoFrame __stdcall EraseLOGO_YUY2::GetFrame(int n, IScriptEnvironment *env)
 	env->MakeWritable(&frame);
 
 	BYTE* dst = frame->GetWritePtr();
-	const int dst_w = frame->GetRowSize();
-	const int dst_h = frame->GetHeight();
+	const int dst_w     = frame->GetRowSize();
+	const int dst_pitch = frame->GetPitch();
+	const int dst_h     = frame->GetHeight();
 
 	LOGO_PIXEL_YUY2* lgp = (LOGO_PIXEL_YUY2*)(lgh +1);
 
-	dst += lgh->x * 2 + lgh->y * dst_w;
+	dst += lgh->x * 2 + lgh->y * dst_pitch;
 
 	for(int i=0;i<lgh->h && i<dst_h-lgh->y;i++){
 		for(int j=0;j<lgh->w && j<dst_w/2-lgh->x;j+=2){
@@ -154,7 +155,7 @@ PVideoFrame __stdcall EraseLOGO_YUY2::GetFrame(int n, IScriptEnvironment *env)
 			dst += 4;
 			lgp += 1;
 		}
-		dst += dst_w - j * 2;
+		dst += dst_pitch - j * 2;
 		lgp += (lgh->w - j)/2;
 	}
 
@@ -176,11 +177,12 @@ PVideoFrame __stdcall AddLOGO_YUY2::GetFrame(int n, IScriptEnvironment *env)
 
 	BYTE* dst = frame->GetWritePtr();
 	const int dst_w = frame->GetRowSize();
+	const int dst_pitch = frame->GetPitch();
 	const int dst_h = frame->GetHeight();
 
 	LOGO_PIXEL_YUY2* lgp = (LOGO_PIXEL_YUY2*)(lgh +1);
 
-	dst += lgh->x * 2 + lgh->y * dst_w;
+	dst += lgh->x * 2 + lgh->y * dst_pitch;
 
 	for(int i=0;i<lgh->h && i<dst_h-lgh->y;i++){
 		for(int j=0;j<lgh->w && j<dst_w/2-lgh->x;j+=2){
@@ -195,8 +197,8 @@ PVideoFrame __stdcall AddLOGO_YUY2::GetFrame(int n, IScriptEnvironment *env)
 			dst += 4;
 			lgp += 1;
 		}
-		dst += dst_w - j * 2;
-		lgp += (lgh->w - j)/2;;
+		dst += dst_pitch - j * 2;
+		lgp += (lgh->w - j)/2;
 	}
 	return frame;
 }
@@ -309,14 +311,14 @@ void deLOGO_Base::AdjustLogo(int x,int y,int depth)
 		adjx = x % 4;
 	} else {
 		adjdata->x = data->x + int((x-3)/4);
-		adjx = 4 - (-x%4);
+		adjx = (4 + (x%4)) %4;
 	}
 	if(y>=0){
 		adjdata->y = data->y + int(y/4);
 		adjy = y % 4;
 	} else {
 		adjdata->y = data->y + int((y-3)/4);
-		adjy = 4 - (-y%4);
+		adjy = (4 + (y%4)) %4;
 	}
 
 	adjdata->w = w = data->w + 1;	// 1/4íPà í≤êÆÇ∑ÇÈÇΩÇﬂ
