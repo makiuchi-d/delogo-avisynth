@@ -211,7 +211,7 @@ protected:
 			adjy = (4+ (y%4)) %4;
 		}
 
-		if(adjx==0 && adjy==0) return;
+		if(depth==LOGO_DEFAULT_DEPTH && adjx==0 && adjy==0) return;
 
 		int pitch = lgh.w;
 		// 1/4’PˆÊ’²ß‚Ì‚½‚ßA1‘‚â‚·
@@ -394,9 +394,9 @@ protected:
 		::LOGO_PIXEL* lgp = logodata.get();
 		for(int i=lgh.h;i;--i){
 			for(int j=lgh.w;j;--j){
-				lgp->y  += y;
-				lgp->cb += u;
-				lgp->cr += v;
+				lgp->y  += y * 16;
+				lgp->cb += u * 16;
+				lgp->cr += v * 16;
 				++lgp;
 			}
 		}
