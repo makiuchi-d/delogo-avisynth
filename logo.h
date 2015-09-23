@@ -29,8 +29,13 @@
 * 	31BYTEの文字列
 * 	データ数 1BYTE
 */
-#define LOGO_FILE_HEADER "<logo data file ver0.1>\0\0\0\0\0\0\0\0\0\0\0"
+#define LOGO_FILE_HEADER_STR "<logo data file ver0.1>\0\0\0\0\0\0\0\0\0\0\0"
 #define LOGO_FILE_HEADER_STR_SIZE  31
+
+typedef struct {
+	char          str[LOGO_FILE_HEADER_STR_SIZE];
+	unsigned char logonum;
+} LOGO_FILE_HEADER;
 
 
 /* ロゴデータ最大サイズ：
@@ -51,10 +56,11 @@
 *		ロゴの基本的な情報を記録
 *-------------------------------------------------------------------*/
 typedef struct {
-	char     name[LOGO_MAX_NAME]; 	/* 名称         */
-	short    x, y;      			/* 基本位置     */
-	short    h, w;      			/* ロゴ高さ・幅 */
-	int      reserve[2];			/* 拡張用に予約 */
+	char     name[LOGO_MAX_NAME]; 	/* 名称                   */
+	short    x, y;      			/* 基本位置               */
+	short    h, w;      			/* ロゴ高さ・幅           */
+	short    fi, fo;    			/* デフォルトのFadeIn/Out */
+	short    st, ed;    			/* デフォルトの開始･終了  */
 } LOGO_HEADER;
 
 /*--------------------------------------------------------------------
@@ -70,18 +76,15 @@ typedef struct {
 	short cr;		/* 色差（赤）    -2048～2048   */
 } LOGO_PIXEL;
 
-
-/*--------------------------------------------------------------------
-*	ロゴデータ全体のサイズ
-*-------------------------------------------------------------------*/
-#define LOGO_DATASIZE(ptr)  \
-	(sizeof(LOGO_HEADER)+((LOGO_HEADER *)ptr)->h*((LOGO_HEADER *)ptr)->w*sizeof(LOGO_PIXEL))
-
 /*--------------------------------------------------------------------
 *	ロゴデータのサイズ（ヘッダ無し）
 *-------------------------------------------------------------------*/
 #define LOGO_PIXELSIZE(ptr)  \
 	(((LOGO_HEADER *)ptr)->h*((LOGO_HEADER *)ptr)->w*sizeof(LOGO_PIXEL))
 
+/*--------------------------------------------------------------------
+*	ロゴデータ全体のサイズ
+*-------------------------------------------------------------------*/
+#define LOGO_DATASIZE(ptr) (sizeof(LOGO_HEADER)+LOGO_PIXELSIZE(ptr))
 
 #endif

@@ -1,10 +1,10 @@
 -----------------------------------------------------------------------
-      透過性ロゴ フィルタ for AviSynth 2.5  ver 0.02  by MakKi
+      透過性ロゴ フィルタ for AviSynth 2.5  ver 0.03  by MakKi
 -----------------------------------------------------------------------
 
 【機能】
 
-  BS･CS でよく見かける半透明ロゴを付加または除去します。
+  BS･CSでよく見かけるような半透明ロゴを付加または除去します。
 
 【書式】
 
@@ -12,12 +12,14 @@
         AddLOGO(logofile="", logoname="",
                   pos_x=0, pos_y=0, depth=128,
                   yc_y=0,  yc_u=0,  yc_v=0,
-                  start=0, fadein=0, fadeout=0, end=-1)
+                  start=0, fadein=0, fadeout=0, end=-1,
+                  interlaced=false)
   ・ロゴ除去
         EraseLOGO(logofile="", logoname="",
                   pos_x=0, pos_y=0, depth=128,
                   yc_y=0,  yc_u=0,  yc_v=0,
-                  start=0, fadein=0, fadeout=0, end=-1)
+                  start=0, fadein=0, fadeout=0, end=-1,
+                  interlaced=false)
 
      logofile         : ロゴファイル名（省略不可）  *.ldp、*.lgdのどちらも使用できます。
      logoname         : ロゴ名        （省略可）    省略した場合はロゴデータファイルの先頭に保存されているロゴを使用します。
@@ -26,19 +28,21 @@
      depth            : 不透明度（深度）調整        128で100%として調整します。
      start, end       : 開始･終了フレーム           フレーム番号で指定してください。end<startの時はstart以降の全てのフレームで実行されます。
      fadein, fadeout  : フェードフレーム数          ロゴをフェードさせます。
+     interlaced       : インターレースフラグ        YV12をインターレースとして扱います。YUY2では無視されます。
 
-  start, end 以外のパラメータはAviUtl用透過性ロゴフィルタのパラメータと共通です。
+  start, end, interlaced 以外のパラメータはAviUtl用透過性ロゴフィルタのパラメータと共通です。
   ロゴデータの作成にはAviUtl用ロゴ解析プラグインを使用してください。
 
-  ※YUY2専用です。呼び出す前にConvertToYUY2等でYUY2式空間に変換してください。
+  ※YUY2,YV12専用です。必要に応じて呼び出す前に色空間変換してください。
   ※AviSynth 2.0x系で使用するには、warpsharpプラグイン付属のLoadPlginEx.dllを使用してください。
         warpsharp配布場所：http://www.geocities.co.jp/SiliconValley-PaloAlto/2382/
 
 
 【注意】
 
-  このプログラムはフリーソフトウェアです。
+  このプログラムはフリーソフトウェアであり、GPLライセンスにて提供されます。
   このプログラムによって損害を負った場合でも、作者は責任を負いません。
+　プログラムのソースコードは配布元にて公開しています。
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -63,6 +67,10 @@
 
 【更新履歴】
 
+  2007/03/21   ver 0.03  ・全部書き直し
+                         ・色差の計算での不要な処理を削除
+                         ・内部処理をAviUtl版とほぼ同じにした
+                         ・YV12に対応
   2004/02/11   ver 0.02  ・ロゴの色の調整機能を追加
   2003/11/05   ver 0.01d ・細かなバグ修正
   2003/11/02   ver 0.01c ・pos_x,pos_yの挙動がおかしかったのを修正
