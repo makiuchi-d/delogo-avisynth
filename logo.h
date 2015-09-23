@@ -1,13 +1,11 @@
 /*====================================================================
 *	ロゴパターン			logo.h
 * 
-* 
-* 
 * [ロゴデータファイル構造]
 * 
-* 	"logo file x.xx\n"	// ファイルヘッダ文字列：バージョン情報とか(31byte)
+* 	"<logo file x.xx>"	// ファイルヘッダ文字列：バージョン情報(28byte)
 * 	+----
-* 	|	ファイルに含まれるロゴデータの数(1byte)
+* 	|	ファイルに含まれるロゴデータの数(4byte, BigEndian)
 * 	+----
 * 	|	LOGO_HEADER		// データヘッダ
 * 	+----
@@ -25,25 +23,24 @@
 #ifndef ___LOGO_H
 #define ___LOGO_H
 
-/* ロゴファイルヘッダ
-* 	31BYTEの文字列
-* 	データ数 1BYTE
-*/
-#define LOGO_FILE_HEADER_STR "<logo data file ver0.1>\0\0\0\0\0\0\0\0\0\0\0"
-#define LOGO_FILE_HEADER_STR_SIZE  31
+/* ロゴヘッダ文字列 */
+#define LOGO_FILE_HEADER_STR "<logo data file ver0.1>\0\0\0\0\0"
+#define LOGO_FILE_HEADER_STR_SIZE  28
 
+/*--------------------------------------------------------------------
+*	LOGO_FILE_HEADER 構造体
+*		ファイルヘッダ．
+*		バージョン情報と含まれるデータ数
+*-------------------------------------------------------------------*/
 typedef struct {
-	char          str[LOGO_FILE_HEADER_STR_SIZE];
-	unsigned char logonum;
+	char str[LOGO_FILE_HEADER_STR_SIZE];
+	union{
+		unsigned long l;
+		unsigned char c[4];
+	} logonum;
 } LOGO_FILE_HEADER;
 
-
-/* ロゴデータ最大サイズ：
-* 		ロゴデータをプロファイルに保存しないようにしたため、
-* 		サイズ制限は実質なくなった
-*/
-#define LOGO_MAXPIXEL (21840)
-#define LOGO_MAXSIZE  (0x40000)
+#define SWAP_ENDIAN(x) (((x&0xff)<<24)|((x&0xff00)<<8)|((x&0xff0000)>>8)|((x&0xff000000)>>24))
 
 /* 不透明度最大値 */
 #define LOGO_MAX_DP   1000

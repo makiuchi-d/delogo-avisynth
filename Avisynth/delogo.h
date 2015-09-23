@@ -146,13 +146,14 @@ protected:
 		}
 
 		// ƒƒSƒf[ƒ^”æ“¾
-		unsigned char num;
+		LOGO_FILE_HEADER lfh;
 		DWORD readed = 0;
-		SetFilePointer(hfile,LOGO_FILE_HEADER_STR_SIZE,0,FILE_BEGIN);
-		ReadFile(hfile,&num,1,&readed,NULL);
-		if(readed!=1){
+		SetFilePointer(hfile,0,0,FILE_BEGIN);
+		ReadFile(hfile,&lfh,sizeof(LOGO_FILE_HEADER),&readed,NULL);
+		if(readed!=sizeof(LOGO_FILE_HEADER)){
 			throw "Failed in reading logofile. - ƒƒSƒf[ƒ^‚Ì“Ç‚İ‚İ‚É¸”s‚µ‚Ü‚µ‚½";
 		}
+		unsigned int num = SWAP_ENDIAN(lfh.logonum.l);
 
 		// ŠY“–ƒƒS‚ğ’T‚·
 		int i;
