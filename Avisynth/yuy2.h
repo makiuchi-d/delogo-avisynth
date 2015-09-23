@@ -58,7 +58,7 @@ struct YUY2 {
 		for(int i=lgh.h;i;--i){
 			if(oddx){
 				dst->dp_y1 = dst->dp_u = dst->dp_v = 0;
-				dst->dp_y2 = src->dp_y; dst->y2 = src->dp_y;
+				dst->dp_y2 = src->dp_y; dst->y2 = src->y;
 				++dst;
 				++src;
 			}
